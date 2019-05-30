@@ -15,7 +15,6 @@
 
 @property (strong,nonatomic) UITableView *table;
 @property (strong,nonatomic) NSArray *content;
-@property (strong,nonatomic) UIButton *buttonSiguiente;
 
 @end
 
@@ -27,21 +26,6 @@
     [self cofigureTableview];
     self.content = @[ @"Mendoza", @"Rawson", @"Misiones"];
     
-    // BUTTON SIGUIENTE
-    self.buttonSiguiente = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-    _buttonSiguiente.frame = CGRectZero;
-    [self.buttonSiguiente setBackgroundColor:[UIColor greenColor]];
-    [_buttonSiguiente setTitle:@"BUSCAR" forState:UIControlStateNormal];
-    [_buttonSiguiente addTarget:self action:@selector(buttonCiudadesPreCargadas) forControlEvents:UIControlEventTouchUpInside];
-    [self.view addSubview:self.buttonSiguiente];
-    
-    [self.buttonSiguiente mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(self.view);
-        make.top.equalTo(self.table.mas_bottom).offset(25);
-        make.left.equalTo(self.view.mas_left).offset(25);
-        make.right.equalTo(self.view.mas_right).offset(-25);
-    }];
-    
 }
 
 -(void)cofigureTableview
@@ -51,12 +35,12 @@
     //set delegate & datasource
     self.table.delegate = self;
     self.table.dataSource = self;
-    self.table.backgroundColor = [UIColor lightGrayColor];
+    self.table.backgroundColor = [UIColor whiteColor];
     [self.view addSubview:self.table];
     [self.table mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(self.view);
         make.centerY.equalTo(self.view);
-        make.height.equalTo(@250);
+        make.height.equalTo(@350);
         make.width.equalTo(@250);
     }];
     

@@ -19,6 +19,7 @@ NSString *const kMain = @"main";
 NSString *const kName = @"name";
 NSString *const kTemp  = @"temp";
 NSString *const kHumidity = @"humidity";
-
+NSString *const kSys = @"sys";
+NSString *const kCountry = @"country";
 
 @end

@@ -18,5 +18,7 @@ extern NSString *const kMain;
 extern NSString *const kName;
 extern NSString *const kTemp;
 extern NSString *const kHumidity;
+extern NSString *const kSys;
+extern NSString *const kCountry;
 
 @end
