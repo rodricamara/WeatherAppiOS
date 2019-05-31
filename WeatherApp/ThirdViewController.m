@@ -14,32 +14,33 @@
 
 static NSString *CellIdentifier = @"WeatherCell";
 
-@interface ThirdViewController ()
+@interface ThirdViewController () <UITableViewDelegate,UITableViewDataSource>
 
 @property(nonatomic, strong) NSDictionary *response;
 @property(nonatomic, strong) NSString *city;
-@property (strong, nonatomic) UITableView *tableView;
+@property(nonatomic, strong) UITableView *tableView;
+@property(nonatomic, strong) NSArray *arrayCityData;
 
 @end
 
 
-@implementation ThirdViewController
+@implementation ThirdViewController 
 
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self obtenerDatosWeatherAPI];
-    [self initializeTableview];
-    
+
 }
 
-- (void) initializeTableview {
+- (void) initializeTableView {
     _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
     [_tableView registerClass:[CustomTableViewCell class] forCellReuseIdentifier:CellIdentifier];
-    _tableView = [[UITableView alloc] initWithFrame:CGRectZero];
+    [_tableView setSeparatorColor:[UIColor grayColor]];
+    [_tableView setBackgroundColor:[UIColor grayColor]];
+    _tableView.dataSource = self;
+    _tableView.delegate = self;
     
-//    _tableView.dataSource = self;
-//    _tableView.delegate = self;
     [self.view addSubview:_tableView];
     
     [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -50,22 +51,49 @@ static NSString *CellIdentifier = @"WeatherCell";
     }];
 }
 
+#pragma mark - Table view data source
 
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 1;
+}
+
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    CustomTableViewCell *cell = (CustomTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+
+    cell.countryName.text = [_arrayCityData objectAtIndex:[indexPath row]];
+    cell.cityName.text = [_arrayCityData objectAtIndex:[indexPath row]+1];  
+    
+    cell.cityTemp.text = [_arrayCityData objectAtIndex:[indexPath row]+2];
+    
+    
+    [cell setNeedsUpdateConstraints];
+    [cell updateConstraintsIfNeeded];
+    return cell;
+}
+
+#pragma mark - private methods
 
 
 - (void)guardarVariables {
     NSString *country = [[self.response objectForKey:kSys] objectForKey:kCountry];
     NSString *nameCity = [self.response objectForKey:kName];
-    NSString *temp = [[self.response objectForKey:kMain] objectForKey:kTemp];
-    NSString *humidity = [[self.response objectForKey:kMain] objectForKey:kHumidity];
+    NSString *temp = [[[self.response objectForKey:kMain] objectForKey:kTemp] stringValue];
+    NSString *humidity = [[[self.response objectForKey:kMain] objectForKey:kHumidity] stringValue];
     
-    NSArray *arrayData = [NSArray arrayWithObjects: country, nameCity, temp, humidity,nil];
+    _arrayCityData = [NSArray arrayWithObjects: country, nameCity, temp, humidity,nil];
     
     //Acceder e imprimir al elemento 1 del array
     //NSLog(@"%@", [arrayData objectAtIndex: 1]);
     
     //Imprimir contentido del array completo
-    NSLog(@"%@", arrayData);
+    [self initializeTableView];
+    
+    NSLog(@"%@", _arrayCityData);
 }
 
 - (void)obtenerDatosWeatherAPI {
@@ -102,5 +130,6 @@ static NSString *CellIdentifier = @"WeatherCell";
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
 }
+
 
 @end

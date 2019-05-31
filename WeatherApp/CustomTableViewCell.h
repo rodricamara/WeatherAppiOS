@@ -10,4 +10,10 @@
 
 @interface CustomTableViewCell : UITableViewCell
 
+@property(nonatomic,strong) UILabel *countryName;
+@property(nonatomic,strong) UILabel *cityName;
+@property(nonatomic,strong) UILabel *cityTemp;
+@property(nonatomic,strong) UILabel *cityHumidity;
+@property(nonatomic,strong) UIImageView *contryFlagImage;
+
 @end
