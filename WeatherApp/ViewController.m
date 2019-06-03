@@ -71,15 +71,11 @@
     [self.labelBienvenida mas_makeConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(self.view);
         make.top.equalTo(self.view).offset(self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height + 25);
-        //self.navigationController.navigationBar.frame.size.height = 44
-        //UIApplication sharedApplication].statusBarFrame.size.height = 20
-        //TOTAL 64
     }];
     // Label Ingrese Ciudad
     [self.labelIngreseCiudad mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(_labelBienvenida.mas_bottom).offset(25);;
         make.left.equalTo(self.view.mas_left).offset(25);
-
 
     }];
     // TextField

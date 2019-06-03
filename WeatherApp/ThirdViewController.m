@@ -11,6 +11,7 @@
 #import "Constants.h"
 #import "CustomTableViewCell.h"
 #import "Masonry.h"
+#import "ViewController.h"
 
 static NSString *CellIdentifier = @"WeatherCell";
 
@@ -66,10 +67,9 @@ static NSString *CellIdentifier = @"WeatherCell";
     CustomTableViewCell *cell = (CustomTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
 
     cell.countryName.text = [_arrayCityData objectAtIndex:[indexPath row]];
-    cell.cityName.text = [_arrayCityData objectAtIndex:[indexPath row]+1];  
-    
-    cell.cityTemp.text = [_arrayCityData objectAtIndex:[indexPath row]+2];
-    
+    cell.cityName.text = [_arrayCityData objectAtIndex:[indexPath row]+1];
+    cell.cityTemp.text = [NSString stringWithFormat: @"Temperatura: %@º",[_arrayCityData objectAtIndex:[indexPath row]+2]];
+    cell.cityHumidity.text = [_arrayCityData objectAtIndex:[indexPath row]+3];
     
     [cell setNeedsUpdateConstraints];
     [cell updateConstraintsIfNeeded];
@@ -86,9 +86,6 @@ static NSString *CellIdentifier = @"WeatherCell";
     NSString *humidity = [[[self.response objectForKey:kMain] objectForKey:kHumidity] stringValue];
     
     _arrayCityData = [NSArray arrayWithObjects: country, nameCity, temp, humidity,nil];
-    
-    //Acceder e imprimir al elemento 1 del array
-    //NSLog(@"%@", [arrayData objectAtIndex: 1]);
     
     //Imprimir contentido del array completo
     [self initializeTableView];
@@ -114,7 +111,7 @@ static NSString *CellIdentifier = @"WeatherCell";
         response = responseObject;
         success(responseObject);
     } failure:^(NSURLSessionTask *operation, NSError *error) {
-        NSLog(@"Error: %@", error);
+        [self popupError];
     }];
 }
 
@@ -124,6 +121,16 @@ static NSString *CellIdentifier = @"WeatherCell";
         self.city = city;
     }
     return self;
+}
+
+-(void) popupError {
+    UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error" message:@"La ciudad ingresada no se encuentra" preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction *actionOK = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * _Nonnull action) {
+        [self.navigationController popViewControllerAnimated:YES];
+    }];
+    [alert addAction:actionOK];
+    [self presentViewController:alert animated:YES completion:nil];
 }
 
 
