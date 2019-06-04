@@ -88,8 +88,6 @@
     // Buton Buscar
     [self.buttonBuscar mas_makeConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(_textFieldCiudad.mas_bottom).offset(10);
-        //make.bottom.equalTo(self.view).offset(-50);
-       // make.left.equalTo(self.view.mas_left).offset(25);
         make.right.equalTo(_textFieldCiudad.mas_right);
     }];
     // Buton Ciudades PRE-CARGADAS

@@ -17,7 +17,9 @@ extern NSString *const kApiKey;
 extern NSString *const kMain;
 extern NSString *const kName;
 extern NSString *const kTemp;
+extern NSString *const kTemperatura;
 extern NSString *const kHumidity;
+extern NSString *const kHumedad;
 extern NSString *const kSys;
 extern NSString *const kCountry;
 

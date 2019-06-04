@@ -18,22 +18,33 @@
 - (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier {
     self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
     if (self) {
-        
+        self.selectionStyle = UITableViewCellSelectionStyleNone;
         [self initializeCityName];
         [self initializeCountryName];
         [self initializeCityTemp];
         [self initializeCityHuimidity];
-        [self applyCityNameConstraints];
-        [self applyCountryNameConstraints];
-        [self applyCityTempConstraints];
-        [self applyCityHumidityConstraints];        
-        [super layoutSubviews];
-        
     }
-    
     return self;
 }
 
+-(void) updateConstraints {
+    if (!self.didSetupConstraints) {
+        [self applyContenViewConstraints];
+        [self applyCityNameConstraints];
+        [self applyCountryNameConstraints];
+        [self applyCityTempConstraints];
+        [self applyCityHumidityConstraints];
+        self.didSetupConstraints = YES;
+}
+    [super updateConstraints];
+    
+}
+
+- (void)layoutSubviews {
+    [super layoutSubviews];
+    [self.contentView setNeedsLayout];
+    [self.contentView layoutIfNeeded];
+}
 
 #pragma mark - private methods
 
@@ -59,26 +70,29 @@
     [_cityHumidity setTextColor:[UIColor blueColor]];
 }
 
-- (void)applyCountryNameConstraints {
-    [self.contentView addSubview:_countryName];
-    [_countryName mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.contentView.mas_right).offset(-55);
-        make.bottom.equalTo(self.contentView.mas_bottom);
-        make.width.equalTo(self.contentView.mas_width);
-        make.height.equalTo(self.contentView.mas_height);
-    //    make.height.equalTo(@200);
+-(void) applyContenViewConstraints{
+    [self.contentView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self);
+        make.width.equalTo(self);
+        make.height.equalTo(@120);
     }];
 }
 
 - (void)applyCityNameConstraints {
     [self.contentView addSubview:_cityName];
     [_cityName mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.contentView.mas_left);
-        make.bottom.equalTo(self.contentView.mas_bottom);
-        make.width.equalTo(self.cityName);
-        make.height.equalTo(self.contentView.mas_height);
-        make.top.equalTo(self);
-        
+        make.top.equalTo(self.contentView.mas_top).offset(10);
+        make.left.equalTo(self.contentView.mas_left).offset(10);
+    }];
+}
+
+- (void)applyCountryNameConstraints {
+    [self.contentView addSubview:_countryName];
+    [_countryName mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.contentView.mas_top).offset(10);
+        make.left.equalTo(self.cityName.mas_right).offset(15);
+        make.bottom.equalTo(self.cityName.mas_bottom);
+        make.width.equalTo(self.countryName);
     }];
 }
 
@@ -86,19 +100,15 @@
     [self.contentView addSubview:_cityTemp];
     [_cityTemp mas_makeConstraints:^(MASConstraintMaker *make) {
         make.left.equalTo(self.cityName.mas_left);
-        make.top.equalTo(self.cityName.mas_bottom).offset(50);
-//        make.width.equalTo(self.contentView.mas_width);
-//        make.height.equalTo(self.contentView.mas_height);
-        
+        make.top.equalTo(self.cityName.mas_bottom).offset(15);
+        make.height.equalTo(self.cityTemp);
     }];
 }
 - (void)applyCityHumidityConstraints {
     [self.contentView addSubview:_cityHumidity];
     [_cityHumidity mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.equalTo(self.contentView.mas_right).offset(-55);
-        make.top.equalTo(self.countryName.mas_bottom);
-//        make.width.equalTo(self.contentView.mas_width);
-//        make.height.equalTo(self.contentView.mas_height);
+        make.left.equalTo(self.cityTemp);
+        make.top.equalTo(self.cityTemp.mas_bottom).offset(15);
     }];
 }
 

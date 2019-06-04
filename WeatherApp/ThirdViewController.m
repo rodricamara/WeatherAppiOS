@@ -17,6 +17,7 @@ static NSString *CellIdentifier = @"WeatherCell";
 
 @interface ThirdViewController () <UITableViewDelegate,UITableViewDataSource>
 
+@property (assign, nonatomic) BOOL didSetupConstraints;
 @property(nonatomic, strong) NSDictionary *response;
 @property(nonatomic, strong) NSString *city;
 @property(nonatomic, strong) UITableView *tableView;
@@ -45,7 +46,7 @@ static NSString *CellIdentifier = @"WeatherCell";
     [self.view addSubview:_tableView];
     
     [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.view).offset(20);
+        make.top.equalTo(self.view).offset(self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height);
         make.left.equalTo(self.view.mas_left);
         make.right.equalTo(self.view.mas_right);
         make.bottom.greaterThanOrEqualTo(self.view.mas_bottom);
@@ -62,14 +63,13 @@ static NSString *CellIdentifier = @"WeatherCell";
     return 1;
 }
 
-
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     CustomTableViewCell *cell = (CustomTableViewCell *)[tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
 
     cell.countryName.text = [_arrayCityData objectAtIndex:[indexPath row]];
     cell.cityName.text = [_arrayCityData objectAtIndex:[indexPath row]+1];
-    cell.cityTemp.text = [NSString stringWithFormat: @"Temperatura: %@º",[_arrayCityData objectAtIndex:[indexPath row]+2]];
-    cell.cityHumidity.text = [_arrayCityData objectAtIndex:[indexPath row]+3];
+    cell.cityTemp.text = [NSString stringWithFormat: @"%@ %@º",kTemperatura,[_arrayCityData objectAtIndex:[indexPath row]+2]];
+    cell.cityHumidity.text = [NSString stringWithFormat: @"%@ %@%s",kHumedad,[_arrayCityData objectAtIndex:[indexPath row]+3],"%"];
     
     [cell setNeedsUpdateConstraints];
     [cell updateConstraintsIfNeeded];
