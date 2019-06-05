@@ -14,7 +14,8 @@
 @interface SecondViewController () <UITableViewDelegate,UITableViewDataSource>
 
 @property (strong,nonatomic) UITableView *table;
-@property (strong,nonatomic) NSArray *content;
+@property (strong,nonatomic) NSArray *ciudadesMza;
+@property (strong,nonatomic) UISearchBar *searchBar;
 
 @end
 
@@ -23,27 +24,53 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor yellowColor];
-    [self cofigureTableview];
-    self.content = @[ @"Mendoza", @"Rawson", @"Misiones"];
-    
+    [self initializeArrayCiudadesMza];
+    [self initializeTableview];
+    [self initializeSearchBar];
+    [self applyTableViewConstranints];
+    [self applySearchBarConstraints];
 }
 
--(void)cofigureTableview
-{
-    //init tableview
+#pragma mark - private methods
+
+-(void) initializeArrayCiudadesMza {
+    self.ciudadesMza = @[@"Mendoza", @"General Alvear", @"San Martín", @"Godoy Cruz", @"Guaymallén", @"Junín", @"La Paz", @"Las Heras", @"Lavalle", @"Luján de Cuyo", @"Maipú", @"Malargüe", @"Rivadavia", @"San Carlos", @"San Rafael", @"Santa Rosa", @"Tunuyán", @"Tupungato"];
+}
+
+-(void) initializeTableview {
     self.table = [[UITableView alloc] initWithFrame:CGRectZero];
-    //set delegate & datasource
     self.table.delegate = self;
     self.table.dataSource = self;
     self.table.backgroundColor = [UIColor whiteColor];
-    [self.view addSubview:self.table];
+}
+
+-(void) applyTableViewConstranints{
     [self.table mas_makeConstraints:^(MASConstraintMaker *make) {
+        [self.view addSubview:self.table];
+        make.top.equalTo(self.view.mas_centerY);
+        make.bottom.equalTo(self.view.mas_bottom).offset(-50);
         make.centerX.equalTo(self.view);
-        make.centerY.equalTo(self.view);
-        make.height.equalTo(@350);
-        make.width.equalTo(@250);
+        make.left.equalTo(self.view.mas_left).offset(20);
+        make.right.equalTo(self.view.mas_right).offset(-20);
     }];
-    
+}
+
+-(void) initializeSearchBar {
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectZero];
+    self.searchBar.placeholder = @"Ingrese ciudad a filtrar";
+    self.searchBar.barTintColor = [UIColor blackColor];
+    self.searchBar.tintColor = [UIColor whiteColor];
+    self.searchBar.showsSearchResultsButton = YES;
+}
+
+-(void) applySearchBarConstraints {
+    [self.searchBar mas_makeConstraints:^(MASConstraintMaker *make) {
+        [self.view addSubview:self.searchBar];
+        make.top.equalTo(self.view).offset(self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height + 10);
+        make.width.equalTo(self.searchBar);
+        make.left.equalTo(self.view.mas_left).offset(20);
+        make.right.equalTo(self.view.mas_right).offset(-20);
+    }];
 }
 
 // number of section(s), now I assume there is only 1 section
@@ -53,7 +80,7 @@
 // number of row in the section, devuelve el tamaño del array content
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return _content.count;
+    return _ciudadesMza.count;
 }
 
 // the cell will be returned to the tableView
@@ -67,15 +94,14 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
         
     }
-    cell.textLabel.text =  [_content objectAtIndex:indexPath.row];
+    cell.textLabel.text =  [_ciudadesMza objectAtIndex:indexPath.row];
     return cell;
 }
 
 // when user tap the row, what action you want to perform
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath;
 {
-    NSLog(@"selected row: %@", [_content objectAtIndex:indexPath.row]);
-    [self buttonPressed:[_content objectAtIndex:indexPath.row]];
+    [self buttonPressed:[_ciudadesMza objectAtIndex:indexPath.row]];
 }
 
 - (void)buttonPressed:(NSString*) city {
