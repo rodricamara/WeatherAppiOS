@@ -16,10 +16,11 @@ static NSString *cellIdentifier = @"ciudadIdentifier";
 @interface SecondViewController () <UITableViewDelegate,UITableViewDataSource,UISearchBarDelegate> {
     BOOL isFiltered;
 }
-@property (strong, nonatomic) UISearchBar *searchBar;
-@property (strong, nonatomic) UITableView *tableView;
+@property (strong,nonatomic) UISearchBar *searchBar;
+@property (strong,nonatomic) UITableView *tableView;
 @property (strong,nonatomic) NSArray *ciudadesMza;
 @property (strong,nonatomic) NSMutableArray *ciudadesMzaFiltradas;
+@property (strong,nonatomic) UISwitch *switchTableView;
 
 @end
 
@@ -27,12 +28,16 @@ static NSString *cellIdentifier = @"ciudadIdentifier";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = [UIColor yellowColor];
+    self.view.backgroundColor = [UIColor cyanColor];
     [self initializeArrayCiudadesMza];
     [self initializeTableview];
     [self initializeSearchBar];
+    [self initializeSwitchTableview];
     [self applyTableViewConstranints];
     [self applySearchBarConstraints];
+    [self applySwitchTableView];
+    
+    [self.switchTableView addTarget:self action:@selector(switchToggled:) forControlEvents:UIControlEventValueChanged];
     
     isFiltered = NO;
     self.searchBar.delegate = self;
@@ -52,6 +57,21 @@ static NSString *cellIdentifier = @"ciudadIdentifier";
     self.tableView.backgroundColor = [UIColor whiteColor];
 }
 
+-(void) initializeSearchBar {
+    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectZero];
+    self.searchBar.placeholder = @"Ingrese ciudad a filtrar";
+    self.searchBar.barTintColor = self.view.backgroundColor;
+    self.searchBar.tintColor = [UIColor whiteColor];
+}
+
+-(void) initializeSwitchTableview {
+    self.switchTableView = [[UISwitch alloc] initWithFrame:CGRectZero];
+    self.switchTableView.onTintColor = [UIColor greenColor];
+    self.switchTableView.tintColor = [UIColor blueColor];
+    self.switchTableView.thumbTintColor = [UIColor whiteColor];
+    self.switchTableView.on = YES;
+}
+
 -(void) applyTableViewConstranints{
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         [self.view addSubview:self.tableView];
@@ -63,14 +83,6 @@ static NSString *cellIdentifier = @"ciudadIdentifier";
     }];
 }
 
--(void) initializeSearchBar {
-    self.searchBar = [[UISearchBar alloc] initWithFrame:CGRectZero];
-    self.searchBar.placeholder = @"Ingrese ciudad a filtrar";
-    self.searchBar.barTintColor = [UIColor blackColor];
-    self.searchBar.tintColor = [UIColor whiteColor];
-    self.searchBar.showsSearchResultsButton = YES;
-}
-
 -(void) applySearchBarConstraints {
     [self.searchBar mas_makeConstraints:^(MASConstraintMaker *make) {
         [self.view addSubview:self.searchBar];
@@ -78,6 +90,15 @@ static NSString *cellIdentifier = @"ciudadIdentifier";
         make.width.equalTo(self.searchBar);
         make.left.equalTo(self.view.mas_left).offset(20);
         make.right.equalTo(self.view.mas_right).offset(-20);
+    }];
+}
+
+-(void) applySwitchTableView {
+    [self.switchTableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        [self.view addSubview:self.switchTableView];
+        make.bottom.equalTo(self.tableView.mas_top).offset(-10);
+        make.right.equalTo(self.searchBar.mas_right);
+        make.width.equalTo(@40);
     }];
 }
 
@@ -97,6 +118,14 @@ static NSString *cellIdentifier = @"ciudadIdentifier";
         }
     }
     [self.tableView reloadData];
+}
+
+- (void) switchToggled:(UISwitch *) switchA {
+    if ([switchA isOn]) {
+        [self.tableView setUserInteractionEnabled:YES];
+    } else {
+        [self.tableView setUserInteractionEnabled:NO];
+    }
 }
 
 // number of section(s), now I assume there is only 1 section
