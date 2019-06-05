@@ -11,11 +11,15 @@
 #import "Masonry.h"
 #import "ThirdViewController.h"
 
-@interface SecondViewController () <UITableViewDelegate,UITableViewDataSource>
+static NSString *cellIdentifier = @"ciudadIdentifier";
 
-@property (strong,nonatomic) UITableView *table;
+@interface SecondViewController () <UITableViewDelegate,UITableViewDataSource,UISearchBarDelegate> {
+    BOOL isFiltered;
+}
+@property (strong, nonatomic) UISearchBar *searchBar;
+@property (strong, nonatomic) UITableView *tableView;
 @property (strong,nonatomic) NSArray *ciudadesMza;
-@property (strong,nonatomic) UISearchBar *searchBar;
+@property (strong,nonatomic) NSMutableArray *ciudadesMzaFiltradas;
 
 @end
 
@@ -29,6 +33,10 @@
     [self initializeSearchBar];
     [self applyTableViewConstranints];
     [self applySearchBarConstraints];
+    
+    isFiltered = NO;
+    self.searchBar.delegate = self;
+    
 }
 
 #pragma mark - private methods
@@ -38,15 +46,15 @@
 }
 
 -(void) initializeTableview {
-    self.table = [[UITableView alloc] initWithFrame:CGRectZero];
-    self.table.delegate = self;
-    self.table.dataSource = self;
-    self.table.backgroundColor = [UIColor whiteColor];
+    self.tableView = [[UITableView alloc] initWithFrame:CGRectZero];
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    self.tableView.backgroundColor = [UIColor whiteColor];
 }
 
 -(void) applyTableViewConstranints{
-    [self.table mas_makeConstraints:^(MASConstraintMaker *make) {
-        [self.view addSubview:self.table];
+    [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        [self.view addSubview:self.tableView];
         make.top.equalTo(self.view.mas_centerY);
         make.bottom.equalTo(self.view.mas_bottom).offset(-50);
         make.centerX.equalTo(self.view);
@@ -73,6 +81,24 @@
     }];
 }
 
+-(void) searchBar: (UISearchBar *) searchBar textDidChange:(NSString *)searchText{
+    if(searchText.length == 0){
+        isFiltered = NO;
+        [self.searchBar endEditing:YES];
+    }
+    else {
+        isFiltered = YES;
+        _ciudadesMzaFiltradas = [[NSMutableArray alloc]init];
+        for (NSString *i in self.ciudadesMza) {
+            NSRange range = [i rangeOfString:searchText options:NSCaseInsensitiveSearch];
+            if (range.location != NSNotFound) {
+                [_ciudadesMzaFiltradas addObject:i];
+            }
+        }
+    }
+    [self.tableView reloadData];
+}
+
 // number of section(s), now I assume there is only 1 section
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
     return 1;
@@ -80,21 +106,27 @@
 // number of row in the section, devuelve el tamaño del array content
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    if(isFiltered){
+        return _ciudadesMzaFiltradas.count;
+    }
     return _ciudadesMza.count;
 }
 
 // the cell will be returned to the tableView
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    static NSString *cellIdentifier = @"cellIdentifier";
-    
-    UITableViewCell *cell = [self.table dequeueReusableCellWithIdentifier:cellIdentifier];
+    UITableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:cellIdentifier];
     
     if(cell == nil) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:cellIdentifier];
-        
     }
-    cell.textLabel.text =  [_ciudadesMza objectAtIndex:indexPath.row];
+    
+    if(isFiltered) {
+        cell.textLabel.text = [_ciudadesMzaFiltradas objectAtIndex:indexPath.row];
+    }
+    else {
+        cell.textLabel.text =  [_ciudadesMza objectAtIndex:indexPath.row];
+    }
     return cell;
 }
 
