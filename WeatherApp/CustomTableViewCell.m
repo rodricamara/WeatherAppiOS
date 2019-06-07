@@ -46,7 +46,7 @@
     [self.contentView layoutIfNeeded];
 }
 
-#pragma mark - private methods
+#pragma mark - private initialize methods
 
 -(void)initializeCountryName {
     _countryName =[[UILabel alloc] initWithFrame:CGRectZero];
@@ -69,6 +69,8 @@
     _cityHumidity =[[UILabel alloc] initWithFrame:CGRectZero];
     [_cityHumidity setTextColor:[UIColor blueColor]];
 }
+
+#pragma mark - private apply masonry constraints methods
 
 -(void) applyContenViewConstraints{
     [self.contentView mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -111,7 +113,5 @@
         make.top.equalTo(self.cityTemp.mas_bottom).offset(15);
     }];
 }
-
-
 
 @end

@@ -35,23 +35,10 @@ static NSString *CellIdentifier = @"WeatherCell";
 
 }
 
-- (void) initializeTableView {
-    _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
-    [_tableView registerClass:[CustomTableViewCell class] forCellReuseIdentifier:CellIdentifier];
-    [_tableView setSeparatorColor:[UIColor grayColor]];
-    [_tableView setBackgroundColor:[UIColor grayColor]];
-    _tableView.dataSource = self;
-    _tableView.delegate = self;
-    
-    [self.view addSubview:_tableView];
-    
-    [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.top.equalTo(self.view).offset(self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height);
-        make.left.equalTo(self.view.mas_left);
-        make.right.equalTo(self.view.mas_right);
-        make.bottom.greaterThanOrEqualTo(self.view.mas_bottom);
-    }];
+- (void)didReceiveMemoryWarning {
+    [super didReceiveMemoryWarning];
 }
+
 
 #pragma mark - Table view data source
 
@@ -78,6 +65,23 @@ static NSString *CellIdentifier = @"WeatherCell";
 
 #pragma mark - private methods
 
+- (void) initializeTableView {
+    _tableView = [[UITableView alloc] initWithFrame:CGRectZero style:UITableViewStylePlain];
+    [_tableView registerClass:[CustomTableViewCell class] forCellReuseIdentifier:CellIdentifier];
+    [_tableView setSeparatorColor:[UIColor grayColor]];
+    [_tableView setBackgroundColor:[UIColor grayColor]];
+    _tableView.dataSource = self;
+    _tableView.delegate = self;
+    
+    [self.view addSubview:_tableView];
+    
+    [_tableView mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.top.equalTo(self.view).offset(self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height);
+        make.left.equalTo(self.view.mas_left);
+        make.right.equalTo(self.view.mas_right);
+        make.bottom.greaterThanOrEqualTo(self.view.mas_bottom);
+    }];
+}
 
 - (void)guardarVariables {
     NSString *country = [[self.response objectForKey:kSys] objectForKey:kCountry];
@@ -86,7 +90,6 @@ static NSString *CellIdentifier = @"WeatherCell";
     NSString *humidity = [[[self.response objectForKey:kMain] objectForKey:kHumidity] stringValue];
     
     _arrayCityData = [NSArray arrayWithObjects: country, nameCity, temp, humidity,nil];
-    
     //Imprimir contentido del array completo
     [self initializeTableView];
     
@@ -132,11 +135,5 @@ static NSString *CellIdentifier = @"WeatherCell";
     [alert addAction:actionOK];
     [self presentViewController:alert animated:YES completion:nil];
 }
-
-
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-}
-
 
 @end

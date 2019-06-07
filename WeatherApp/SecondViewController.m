@@ -30,18 +30,16 @@ static NSString *cellIdentifier = @"ciudadIdentifier";
     [super viewDidLoad];
     self.view.backgroundColor = [UIColor cyanColor];
     [self initializeArrayCiudadesMza];
-    [self initializeTableview];
     [self initializeSearchBar];
+    [self initializeTableview];
+    [self applySearchBarConstraints];
     [self initializeSwitchTableview];
     [self applyTableViewConstranints];
-    [self applySearchBarConstraints];
     [self applySwitchTableView];
     
     [self.switchTableView addTarget:self action:@selector(switchToggled:) forControlEvents:UIControlEventValueChanged];
-    
     isFiltered = NO;
-    self.searchBar.delegate = self;
-    
+    self.searchBar.delegate = self;    
 }
 
 #pragma mark - private methods
@@ -72,24 +70,23 @@ static NSString *cellIdentifier = @"ciudadIdentifier";
     self.switchTableView.on = YES;
 }
 
+-(void) applySearchBarConstraints {
+    [self.searchBar mas_makeConstraints:^(MASConstraintMaker *make) {
+        [self.view addSubview:self.searchBar];
+        make.top.equalTo(self.view).offset(self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height);
+        make.left.equalTo(self.view.mas_left);
+        make.right.equalTo(self.view.mas_right);
+    }];
+}
+
 -(void) applyTableViewConstranints{
     [self.tableView mas_makeConstraints:^(MASConstraintMaker *make) {
         [self.view addSubview:self.tableView];
         make.top.equalTo(self.view.mas_centerY);
-        make.bottom.equalTo(self.view.mas_bottom).offset(-50);
+        make.bottom.equalTo(self.view.mas_bottom).offset(-20);
         make.centerX.equalTo(self.view);
-        make.left.equalTo(self.view.mas_left).offset(20);
-        make.right.equalTo(self.view.mas_right).offset(-20);
-    }];
-}
-
--(void) applySearchBarConstraints {
-    [self.searchBar mas_makeConstraints:^(MASConstraintMaker *make) {
-        [self.view addSubview:self.searchBar];
-        make.top.equalTo(self.view).offset(self.navigationController.navigationBar.frame.size.height + [UIApplication sharedApplication].statusBarFrame.size.height + 10);
-        make.width.equalTo(self.searchBar);
-        make.left.equalTo(self.view.mas_left).offset(20);
-        make.right.equalTo(self.view.mas_right).offset(-20);
+        make.left.equalTo(self.view.mas_left).offset(10);
+        make.right.equalTo(self.view.mas_right).offset(-10);
     }];
 }
 
@@ -97,7 +94,7 @@ static NSString *cellIdentifier = @"ciudadIdentifier";
     [self.switchTableView mas_makeConstraints:^(MASConstraintMaker *make) {
         [self.view addSubview:self.switchTableView];
         make.bottom.equalTo(self.tableView.mas_top).offset(-10);
-        make.right.equalTo(self.searchBar.mas_right);
+        make.right.equalTo(self.tableView.mas_right).offset(-10);
         make.width.equalTo(@40);
     }];
 }
